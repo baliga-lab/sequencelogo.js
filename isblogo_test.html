@@ -2,6 +2,12 @@
 <html>
   <head>
     <title>Motif Prototype</title>
+    <style>
+      body {
+        font-family: Geneva, Helvetica, Verdana;
+        font-size: 12pt;
+      }
+    </style>
     <script src="isblogo.js"></script>
     <script type="text/javascript">
       function initCanvas() {
@@ -12,15 +18,29 @@
                 [0.8, 0.0, 0.1, 0.1],
                 [0.2, 0.4, 0.3, 0.3],
                 [0.05, 0.01, 0.01, 0.993],
-      ]
+            ]
         };
-        isblogo.makeLogo(document.getElementById('mycanvas'), pssm);
+        var canvasOptions = {
+          type: 'canvas',
+          width: 400,
+          height: 300,
+          glyphStyle: '20pt Helvetica'
+        };
+        isblogo.makeLogo('canvas', pssm, canvasOptions);
+        var svgOptions = {
+          type: 'svg',
+          width: 400,
+          height: 300,
+          glyphStyle: '20pt Helvetica'
+        };
+        isblogo.makeLogo('svgcanvas', pssm, svgOptions);
       }
     </script>
   </head>
   <body onload="initCanvas()">
-    <canvas id="mycanvas" width="400" height="300">
-      Canvas not supported here
-    </canvas>
+    <h2>Using Canvas</h2>
+    <div id="canvas"></div>
+    <h2>Using SVG</h2>
+    <div id="svgcanvas"></div>
   </body>
 </html>
