@@ -16,9 +16,9 @@ if (!isblogo) {
 
     function currentFontHeight(context) {
         // since canvas has no easy way to determine the
-        // height of a text, twice the width of e is used
+        // height of a text, the width of 'm' is used
         // as a quick and dirty approximation
-        return context.measureText('e').width * 2.0;
+        return context.measureText('m').width;
     }
 
     function drawLabelsX(context, startx, y) {
@@ -68,15 +68,14 @@ if (!isblogo) {
         context.stroke();
     }
 
-    function maxIndex(arr) {
-        var result = 0, maxValue = Number.MIN_VALUE, i;
+    function rank(arr) {
+        var result = [], i;
         for (i = 0; i < arr.length; i += 1) {
-            if (arr[i] > maxValue) {
-                maxValue = arr[i];
-                result = i;
-            }
+            result.push([i, arr[i]]);
         }
-        return result;
+        return result.sort(function (a, b) {
+            return a[1] - b[1];
+        });
     }
 
     function drawGlyph(context, glyph, x, y, scalex, scaley) {
@@ -95,17 +94,30 @@ if (!isblogo) {
     }
 
     function drawGlyphs(canvas, pssm) {
-        var context, x, y, size, i, maxi;
+        var context, x, y, size, motifPos, maxGlyphHeight, glyphHeight,
+            scaley, columnRanks, currentGlyph, row, maxWidth;
         context = canvas.getContext('2d');
-        x = MARGIN_LEFT;
-        y = canvas.height - MARGIN_BOTTOM;
-
         context.font = '20pt Helvetica';
-        for (i = 0; i < pssm.values.length; i += 1) {
-            maxi = maxIndex(pssm.values[i]);
-            size = drawGlyph(context, pssm.alphabet[maxi],
-                             x, y, 1.0, pssm.values[i][maxi] * 10.0);
-            x += size[0];
+        x = MARGIN_LEFT;
+        glyphHeight = currentFontHeight(context);
+        maxGlyphHeight = (canvas.height - MARGIN_BOTTOM) - MARGIN_TOP;
+        scaley = maxGlyphHeight / glyphHeight;
+
+        for (motifPos = 0; motifPos < pssm.values.length; motifPos += 1) {
+            y = canvas.height - MARGIN_BOTTOM;
+            columnRanks = rank(pssm.values[motifPos]);
+            maxWidth = 0;
+            for (row = 0; row < columnRanks.length; row += 1) {
+                currentGlyph = pssm.alphabet[columnRanks[row][0]];
+                size = drawGlyph(context, currentGlyph,
+                                 x, y, 1.0,
+                                 columnRanks[row][1] * scaley);
+                if (size[0] > maxWidth) {
+                    maxWidth = size[0];
+                }
+                y -= size[1];
+            }
+            x += maxWidth;
         }
     }
 
