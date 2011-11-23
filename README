@@ -1,0 +1,9 @@
+ISB Logo - simple motif visualization in Javascript
+
+Status: Experimental
+Description: This is a simple library to render a PSSM within a HTML
+canvas element.
+
+Usage: Currently, here is only one function, isb.makeLogo(), which takes
+a canvas elemnt and a PSSM, makeLogo() will then render the consensus
+motif. See isblogo_test.html for an example
