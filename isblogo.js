@@ -38,17 +38,36 @@ if (!isblogo) {
         });
     }
 
+    function log(n, base) {
+        return Math.log(n) / Math.log(base);
+    }
+    function uncertaintyAt(pssm, motifPos) {
+        var row, freq, sum = 0;
+        for (row = 0; row < pssm.values[motifPos].length; row += 1) {
+            freq = pssm.values[motifPos][row];
+            if (freq > 0) {
+                sum +=  freq * log(freq, 2);
+            }
+        }
+        return -sum;
+    }
+    function rsequence(pssm, motifPos) {
+        var correctionFactor = 0.0;
+        return 2 - (uncertaintyAt(pssm, motifPos) + correctionFactor);
+    }
+
     // Generic PSSM drawing function
     function drawPSSM(pssm, y0, yHeight, drawFun) {
-        var x, y, motifPos, size, columnRanks, currentGlyph, row, maxWidth;
+        var x, y, motifPos, size, columnRanks, currentGlyph, row, maxWidth, rseq;
         x = MARGIN_LEFT;
         for (motifPos = 0; motifPos < pssm.values.length; motifPos += 1) {
             y = y0;
             columnRanks = rank(pssm.values[motifPos]);
             maxWidth = 0;
+            rseq = rsequence(pssm, motifPos);
             for (row = 0; row < columnRanks.length; row += 1) {
                 currentGlyph = pssm.alphabet[columnRanks[row][0]];
-                size = drawFun(currentGlyph, x, y, 1.0, yHeight, columnRanks[row][1]);
+                size = drawFun(currentGlyph, x, y, 1.5, yHeight, rseq * columnRanks[row][1]);
                 if (size.width > maxWidth) {
                     maxWidth = size.width;
                 }
@@ -154,7 +173,7 @@ if (!isblogo) {
         right = canvas.width - MARGIN_RIGHT;
         bottom = canvas.height - MARGIN_BOTTOM;
 
-        drawLabelsX(context, MARGIN_LEFT, canvas.height);
+        //drawLabelsX(context, MARGIN_LEFT, canvas.height);
         drawLabelsY(context, 0, bottom);
         context.beginPath();
         context.moveTo(MARGIN_LEFT, MARGIN_TOP);
@@ -167,7 +186,7 @@ if (!isblogo) {
                        yHeight, maxFontHeightNormal, weight) {
         var glyphWidth, scaley, glyphHeightScaled;
         glyphWidth = context.measureText(glyph).width * scalex;
-        scaley = weight * (yHeight / maxFontHeightNormal);
+        scaley = weight * (yHeight / maxFontHeightNormal) * 0.65;
         glyphHeightScaled = measureText(glyph, context.font, scalex, scaley);
 
         context.save();
@@ -185,7 +204,7 @@ if (!isblogo) {
         context = canvas.getContext('2d');
         context.textBaseline = 'alphabetic';
         context.font = options.glyphStyle;
-        yHeight = (canvas.height - MARGIN_BOTTOM) - MARGIN_TOP;
+        yHeight = canvas.height - (MARGIN_BOTTOM + MARGIN_TOP);
         maxFontHeightNormal = measureText('Mg', context.font, 1.0, 1.0);
         drawPSSM(pssm, canvas.height - MARGIN_BOTTOM, yHeight,
                  function (currentGlyph, x, y, scalex, yHeight, weight) {
@@ -199,6 +218,7 @@ if (!isblogo) {
         canvas.id = id;
         canvas.setAttribute('width', options.width);
         canvas.setAttribute('height', options.height);
+        canvas.setAttribute('style', 'border: 1px solid black');
         elem = document.getElementById(id);
         elem.parentNode.replaceChild(canvas, elem);
         drawScale(canvas);
