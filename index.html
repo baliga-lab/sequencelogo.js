@@ -12,35 +12,34 @@
     <script type="text/javascript">
       function initCanvas() {
         var pssm = {
-            alphabet: ['A', 'G', 'C', 'T'],
+            alphabet: ['A', 'C', 'G', 'T'],
             values: [
-                [0.1, 0.2, 0.5, 0.2],
-                [0.8, 0.0, 0.1, 0.1],
-                [0.2, 0.4, 0.3, 0.3],
-                [0.05, 0.01, 0.01, 0.993],
+      [0.63636400000000004, 0.272727, 0.090909000000000004, 0.0],
+      [0.13636400000000001, 0.0, 0.81818199999999996, 0.045455000000000002],
+      [0.0, 1.0, 0.0, 0.0],
+      [0.045455000000000002, 0.95454499999999998, 0.0, 0.0],
+      [1.0, 0.0, 0.0, 0.0],
+      [0.90909099999999998, 0.0, 0.0, 0.090909000000000004],
+      [0.0, 0.0, 0.0, 1.0],
+      [0.045455000000000002, 0.72727299999999995, 0.227273, 0.0],
+      [0.63636400000000004, 0.0, 0.36363600000000001, 0.0],
+      [0.0, 0.227273, 0.77272700000000005, 0.0],
+      [0.77272700000000005, 0.13636400000000001, 0.090909000000000004, 0.0],
+      [0.36363600000000001, 0.045455000000000002, 0.59090900000000002, 0.0]
             ]
         };
         var canvasOptions = {
           type: 'canvas',
-          width: 400,
+          width: 500,
           height: 300,
           glyphStyle: '20pt Helvetica'
         };
         isblogo.makeLogo('canvas', pssm, canvasOptions);
-        var svgOptions = {
-          type: 'svg',
-          width: 400,
-          height: 300,
-          glyphStyle: '20pt Helvetica'
-        };
-        isblogo.makeLogo('svgcanvas', pssm, svgOptions);
       }
     </script>
   </head>
   <body onload="initCanvas()">
-    <h2>Using Canvas</h2>
+    <h2>Logo Demo</h2>
     <div id="canvas"></div>
-    <h2>Using SVG</h2>
-    <div id="svgcanvas"></div>
   </body>
 </html>
