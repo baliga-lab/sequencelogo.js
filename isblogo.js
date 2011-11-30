@@ -5,8 +5,8 @@ if (!isblogo) {
 (function () {
     "use strict";
     // some default settings
-    var MARGIN_LEFT = 20, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
-        MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, SVG_NS, GLYPH_COLORS;
+    var MARGIN_LEFT = 20, MARGIN_TOP = 20, MARGIN_RIGHT = 20, FUDGE = 30,
+        MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, SVG_NS, GLYPH_COLORS, MEASURE_CANVAS;
     SVG_NS = 'http://www.w3.org/2000/svg';
     GLYPH_COLORS = {
         'A': 'rgb(0, 200, 50)',
@@ -20,6 +20,9 @@ if (!isblogo) {
         height: 300,
         glyphStyle: '20pt Helvetica'
     };
+    MEASURE_CANVAS = document.createElement('canvas');
+    MEASURE_CANVAS.setAttribute('width', 500);
+    MEASURE_CANVAS.setAttribute('height', 500);
 
     // **********************************************************************
     // ****** Common Functions
@@ -35,8 +38,8 @@ if (!isblogo) {
         });
     }
 
-    // Generic PSSM drawing function, used for both canvas and SVG
-    function drawPSSM(pssm, y0, scaley, drawFun) {
+    // Generic PSSM drawing function
+    function drawPSSM(pssm, y0, yHeight, drawFun) {
         var x, y, motifPos, size, columnRanks, currentGlyph, row, maxWidth;
         x = MARGIN_LEFT;
         for (motifPos = 0; motifPos < pssm.values.length; motifPos += 1) {
@@ -45,11 +48,12 @@ if (!isblogo) {
             maxWidth = 0;
             for (row = 0; row < columnRanks.length; row += 1) {
                 currentGlyph = pssm.alphabet[columnRanks[row][0]];
-                size = drawFun(currentGlyph, x, y, 1.0, columnRanks[row][1] * scaley);
+                size = drawFun(currentGlyph, x, y, 1.0, yHeight, columnRanks[row][1]);
                 if (size.width > maxWidth) {
                     maxWidth = size.width;
                 }
-                y -= (size.height - 2);
+                var oldy = y;
+                y -= size.height;
             }
             x += maxWidth;
         }
@@ -58,20 +62,66 @@ if (!isblogo) {
     // **********************************************************************
     // ****** Canvas-based Implementation
     // **********************************************************************
-
-    function currentFontHeight(context) {
-        // since canvas has no easy way to determine the
-        // height of a text, the width of 'm' is used
-        // as a quick and dirty approximation
-        return context.measureText('m').width;
+    /*
+     * This method works fine as a first approximation, but is not exact enough
+     * What we actually need to do is to print it out and measure after drawing
+     */
+    function textHeightCanvas(text) {
+        var body = document.getElementsByTagName("body")[0];
+        var dummy = document.createElement("div");
+        var dummyText = document.createTextNode(text);
+        dummy.appendChild(dummyText);
+        dummy.setAttribute("style", 'Helvetica 20pt');
+        body.appendChild(dummy);
+        var result = dummy.offsetHeight;
+        body.removeChild(dummy);
+        return result;
     }
+
+    function firstLine(imageData) {
+        var pixels = imageData.data, row, col, index;
+        for (row = 0; row < imageData.height; row += 1) {
+            for (col = 0; col < imageData.width; col += 1) {
+                index = (row * imageData.width * 4) + col * 4;
+                if (pixels[index + 3] != 0) return row;
+            }
+        }
+    }
+    function lastLine(imageData) {
+        var pixels = imageData.data, row, col, index;
+        for (row = imageData.height - 1; row >= 0; row -= 1) {
+            for (col = 0; col < imageData.width; col += 1) {
+                index = (row * imageData.width * 4) + col * 4;
+                if (pixels[index + 3] != 0) return row;
+            }
+        }
+    }
+
+    function measureText(text, font, scalex, scaley) {
+        var imageData, context;
+        if (scaley == 0) return 0;
+        context = MEASURE_CANVAS.getContext('2d');
+        context.fillStyle = "rgb(0, 0, 0)";
+        context.font = font;
+        context.textBaseline = 'top';
+        context.save();
+        context.scale(scalex, scaley);
+        context.fillText(text, 0, 0);
+        context.restore();
+
+        imageData = context.getImageData(0, 0, MEASURE_CANVAS.width, MEASURE_CANVAS.height);
+        var first = firstLine(imageData);
+        context.clearRect(0, 0, MEASURE_CANVAS.width, MEASURE_CANVAS.height);
+        return lastLine(imageData) - first + 1;
+    }
+
 
     function drawLabelsX(context, startx, y) {
         context.font = '12pt Arial';
         var intervalDistance, x, textHeight, i, label, labelWidth, transx, transy;
         intervalDistance = 20;
         x = startx;
-        textHeight = currentFontHeight(context);
+        textHeight = textHeightCanvas('M');
 
         for (i = 10; i < 150; i += 10) {
             context.save();
@@ -113,10 +163,12 @@ if (!isblogo) {
         context.stroke();
     }
 
-    function drawGlyph(context, glyph, x, y, scalex, scaley) {
-        var glyphWidth, glyphHeight;
+    function drawGlyph(context, glyph, x, y, scalex,
+                       yHeight, maxFontHeightNormal, weight) {
+        var glyphWidth, scaley, glyphHeightScaled;
         glyphWidth = context.measureText(glyph).width * scalex;
-        glyphHeight = currentFontHeight(context) * scaley;
+        scaley = weight * (yHeight / maxFontHeightNormal);
+        glyphHeightScaled = measureText(glyph, context.font, scalex, scaley);
 
         context.save();
         context.translate(x, y);
@@ -125,19 +177,20 @@ if (!isblogo) {
         context.fillStyle = GLYPH_COLORS[glyph];
         context.fillText(glyph, x, y);
         context.restore();
-        return { width: glyphWidth, height: glyphHeight };
+        return { width: glyphWidth, height: glyphHeightScaled };
     }
 
     function drawGlyphs(canvas, options, pssm) {
-        var context, maxGlyphHeight, glyphHeight, scaley;
+        var context, maxGlyphHeight, glyphHeight, yHeight, maxFontHeightNormal;
         context = canvas.getContext('2d');
+        context.textBaseline = 'alphabetic';
         context.font = options.glyphStyle;
-        glyphHeight = currentFontHeight(context);
-        maxGlyphHeight = (canvas.height - MARGIN_BOTTOM) - MARGIN_TOP;
-        scaley = maxGlyphHeight / glyphHeight;
-        drawPSSM(pssm, canvas.height - MARGIN_BOTTOM, scaley,
-                 function (currentGlyph, x, y, scalex, scaley) {
-                return drawGlyph(context, currentGlyph, x, y, scalex, scaley);
+        yHeight = (canvas.height - MARGIN_BOTTOM) - MARGIN_TOP;
+        maxFontHeightNormal = measureText('Mg', context.font, 1.0, 1.0);
+        drawPSSM(pssm, canvas.height - MARGIN_BOTTOM, yHeight,
+                 function (currentGlyph, x, y, scalex, yHeight, weight) {
+                     return drawGlyph(context, currentGlyph, x, y, scalex, yHeight,
+                                      maxFontHeightNormal, weight);
             });
     }
 
@@ -153,58 +206,6 @@ if (!isblogo) {
     }
 
     // **********************************************************************
-    // ****** SVG-based Implementation
-    // **********************************************************************
-    function makeScaleAttribute(x, y, scalex, scaley) {
-        var result = 'translate(' + x + ' ' + y + ')';
-        result += ' scale(' + scalex + ' ' + scaley + ')';
-        result += ' translate(-' + x + ' -' + y + ')';
-        return result;
-    }
-
-    function drawGlyphSVG(svg, glyph, style, x, y, scalex, scaley) {
-        var text = document.createElementNS(SVG_NS, "svg:text"), bbox;
-        text.setAttributeNS(null, "x", x);
-        text.setAttributeNS(null, "y", y);
-        text.setAttributeNS(null, "fill", GLYPH_COLORS[glyph]);
-        text.setAttributeNS(null, "style", style);
-        text.setAttributeNS(null, "transform", makeScaleAttribute(x, y, scalex, scaley));
-        text.appendChild(document.createTextNode(glyph));
-        svg.appendChild(text);
-        // use bounding client rect so we get the real dimensions including the
-        // transform
-        bbox = text.getBoundingClientRect();
-        return { width: bbox.width, height: bbox.height, elem: text };
-    }
-
-    function drawGlyphsSVG(svg, options, pssm) {
-        // measure font height by drawing one element and removing it immediately
-        var maxGlyphHeight, glyphHeight, measure, scaley;
-
-        measure = drawGlyphSVG(svg, 'A', options.glyphStyle, 50, 50, 1.0, 1.0);
-        svg.removeChild(measure.elem);
-        maxGlyphHeight = (options.height - MARGIN_BOTTOM) - MARGIN_TOP;
-        glyphHeight = measure.height;
-        scaley = maxGlyphHeight / glyphHeight;
-        drawPSSM(pssm, options.height - MARGIN_BOTTOM, scaley,
-                 function (currentGlyph, x, y, scalex, scaley) {
-                return drawGlyphSVG(svg, currentGlyph, options.glyphStyle, x, y, scalex, scaley);
-            });
-    }
-
-
-    function makeSVG(id, options, pssm) {
-        var svg = document.createElementNS(SVG_NS, 'svg:svg'), elem, scaley;
-        svg.id = id;
-        svg.setAttribute("height", options.height);
-        svg.setAttribute("width", options.width);
-        elem = document.getElementById(id);
-        elem.parentNode.replaceChild(svg, elem);
-        scaley = 10.0;
-        drawGlyphsSVG(svg, options, pssm);
-    }
-
-    // **********************************************************************
     // ****** Public API
     // **********************************************************************
 
@@ -212,12 +213,7 @@ if (!isblogo) {
         if (options === null) {
             options = DEFAULT_OPTIONS;
         }
-        // TODO: copy the options from DEFAULT_OPTIONS that are missing
-
-        if (options.type === 'canvas') {
-            makeCanvas(id, options, pssm);
-        } else if (options.type === 'svg') {
-            makeSVG(id, options, pssm);
-        }
+        // TODO: copy the options from DEFAULT_OPTIONS that are missing        
+        makeCanvas(id, options, pssm);
     };
 }());
