@@ -1,3 +1,4 @@
+/* isblogo.js - see README and LICENSE for details */
 var isblogo;
 if (!isblogo) {
     isblogo = {};
