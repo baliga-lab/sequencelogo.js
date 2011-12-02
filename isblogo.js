@@ -58,9 +58,10 @@ if (!isblogo) {
     }
 
     // Generic PSSM drawing function
-    function drawPSSM(pssm, y0, yHeight, drawFun) {
-        var x, y, motifPos, size, columnRanks, currentGlyph, row, maxWidth, rseq, oldy;
+    function drawPSSM(pssm, scalex, y0, yHeight, drawFun) {
+        var x, y, motifPos, size, columnRanks, currentGlyph, row, maxWidth, rseq, oldy, scalex;
         x = MARGIN_LEFT;
+        
         for (motifPos = 0; motifPos < pssm.values.length; motifPos += 1) {
             y = y0;
             columnRanks = rank(pssm.values[motifPos]);
@@ -68,7 +69,7 @@ if (!isblogo) {
             rseq = rsequence(pssm, motifPos);
             for (row = 0; row < columnRanks.length; row += 1) {
                 currentGlyph = pssm.alphabet[columnRanks[row][0]];
-                size = drawFun(currentGlyph, x, y, 1.5, yHeight, rseq * columnRanks[row][1]);
+                size = drawFun(currentGlyph, x, y, scalex, yHeight, rseq * columnRanks[row][1]);
                 if (size.width > maxWidth) {
                     maxWidth = size.width;
                 }
@@ -208,13 +209,18 @@ if (!isblogo) {
     }
 
     function drawGlyphs(canvas, options, pssm) {
-        var context, yHeight, maxFontHeightNormal;
+        var context, yHeight, maxFontHeightNormal, sumColumnWidthsNormal, xWidth, scalex;
         context = canvas.getContext('2d');
         context.textBaseline = 'alphabetic';
         context.font = options.glyphStyle;
         yHeight = canvas.height - (MARGIN_BOTTOM + MARGIN_TOP);
         maxFontHeightNormal = measureText('Mg', context.font, 1.0, 1.0);
-        drawPSSM(pssm, canvas.height - MARGIN_BOTTOM, yHeight,
+        sumColumnWidthsNormal = context.measureText('W').width * pssm.values.length;
+        xWidth = canvas.width - (MARGIN_LEFT + MARGIN_RIGHT);
+        scalex = xWidth / sumColumnWidthsNormal;
+
+        drawPSSM(pssm, scalex,
+                 canvas.height - MARGIN_BOTTOM, yHeight,
                  function (currentGlyph, x, y, scalex, yHeight, weight) {
                 return drawGlyph(context, currentGlyph, x, y, scalex, yHeight,
                                  maxFontHeightNormal, weight);
