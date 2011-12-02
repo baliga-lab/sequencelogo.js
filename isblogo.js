@@ -197,14 +197,15 @@ if (!isblogo) {
         glyphWidth = context.measureText(glyph).width * scalex;
         scaley = weight * (yHeight / maxFontHeightNormal) * 0.65;
         glyphHeightScaled = measureText(glyph, context.font, scalex, scaley);
-
-        context.save();
-        context.translate(x, y);
-        context.scale(scalex, scaley);
-        context.translate(-x, -y);
-        context.fillStyle = GLYPH_COLORS[glyph];
-        context.fillText(glyph, x, y);
-        context.restore();
+        if (scaley > 0) {
+            context.fillStyle = GLYPH_COLORS[glyph];
+            context.save();
+            context.translate(x, y);
+            context.scale(scalex, scaley);
+            context.translate(-x, -y);
+            context.fillText(glyph, x, y);
+            context.restore();
+        }
         return { width: glyphWidth, height: glyphHeightScaled };
     }
 
