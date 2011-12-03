@@ -1,6 +1,5 @@
 ISB Logo - simple sequence logo visualization in Javascript
 
-Status: Experimental
 Description: This is a simple Javascript library that renders a sequence
 logo into an HTML canvas element, given a PSSM.
 
