@@ -6,8 +6,9 @@ if (!isblogo) {
 (function () {
     "use strict";
     // some default settings
-    var MARGIN_LEFT = 20, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
-        MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, SVG_NS, GLYPH_COLORS, MEASURE_CANVAS;
+    var MARGIN_LEFT = 30, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
+    MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, SVG_NS, GLYPH_COLORS, MEASURE_CANVAS,
+    STRETCH = 0.65;
     SVG_NS = 'http://www.w3.org/2000/svg';
     GLYPH_COLORS = {
         'A': 'rgb(0, 200, 50)',
@@ -165,25 +166,27 @@ if (!isblogo) {
             context.restore();
         }
     }
-    function drawLabelsY(context, x, y) {
-        var i, label;
+*/
+    function drawLabelsY(context, pssm, x0, y0, yHeight) {
+        var i, label, x = x0, numBits = log(pssm.alphabet.length, 2), ydist = (yHeight - 10) / numBits, y = y0 - ydist;
         context.font = '12pt Arial';
-        for (i = 1; i <= 8; i += 1) {
+        context.fillText('bits', x + 10, MARGIN_TOP - 5);
+
+        for (i = 1; i <= numBits; i += 1) {
             label = i.toString();
             context.fillText(label, x, y);
-            y -= 20;
+            y -= ydist;
         }
     }
-*/
 
-    function drawScale(canvas) {
+    function drawScale(canvas, pssm) {
         var context, right, bottom;
         context = canvas.getContext('2d');
         right = canvas.width - MARGIN_RIGHT;
         bottom = canvas.height - MARGIN_BOTTOM;
 
         //drawLabelsX(context, MARGIN_LEFT, canvas.height);
-        //drawLabelsY(context, 0, bottom);
+        drawLabelsY(context, pssm, 5, bottom, bottom - MARGIN_TOP);
         context.beginPath();
         context.moveTo(MARGIN_LEFT, MARGIN_TOP);
         context.lineTo(MARGIN_LEFT, bottom);
@@ -195,7 +198,7 @@ if (!isblogo) {
                        yHeight, maxFontHeightNormal, weight) {
         var glyphWidth, scaley, glyphHeightScaled;
         glyphWidth = context.measureText(glyph).width * scalex;
-        scaley = weight * (yHeight / maxFontHeightNormal) * 0.65;
+        scaley = weight * (yHeight / maxFontHeightNormal) * STRETCH;
         glyphHeightScaled = measureText(glyph, context.font, scalex, scaley);
         if (scaley > 0) {
             context.fillStyle = GLYPH_COLORS[glyph];
@@ -236,7 +239,7 @@ if (!isblogo) {
         canvas.setAttribute('style', 'border: 1px solid black');
         elem = document.getElementById(id);
         elem.parentNode.replaceChild(canvas, elem);
-        drawScale(canvas);
+        drawScale(canvas, pssm);
         drawGlyphs(canvas, options, pssm);
     }
 
