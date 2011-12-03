@@ -6,7 +6,7 @@ if (!isblogo) {
 (function () {
     "use strict";
     // some default settings
-    var MARGIN_LEFT = 30, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
+    var MARGIN_LEFT = 25, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
     MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, SVG_NS, GLYPH_COLORS, MEASURE_CANVAS,
     STRETCH = 0.65;
     SVG_NS = 'http://www.w3.org/2000/svg';
