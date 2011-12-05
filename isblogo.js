@@ -112,23 +112,7 @@ if (!isblogo) {
     // **********************************************************************
     // ****** Canvas-based Implementation
     // **********************************************************************
-    /*
-     * This method works fine as a first approximation, but is not exact enough
-     * What we actually need to do is to print it out and measure after drawing
-     */
-/*
-    function textHeightCanvas(text) {
-        var body = document.getElementsByTagName("body")[0], dummy, dummyText, result;
-        dummy = document.createElement("div");
-        dummyText = document.createTextNode(text);
-        dummy.appendChild(dummyText);
-        dummy.setAttribute("style", 'Helvetica 20pt');
-        body.appendChild(dummy);
-        result = dummy.offsetHeight;
-        body.removeChild(dummy);
-        return result;
-    }
-*/
+
     function firstLine(imageData) {
         var pixels = imageData.data, row, col, index;
         for (row = 0; row < imageData.height; row += 1) {
@@ -178,7 +162,7 @@ if (!isblogo) {
         var intervalDistance, x, textHeight, i, label, labelWidth, transx, transy;
         intervalDistance = 20;
         x = startx;
-        textHeight = textHeightCanvas('M');
+        textHeight = measureText('M', context.font, 1.0, 1.0);
 
         for (i = 10; i < 150; i += 10) {
             context.save();
