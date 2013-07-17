@@ -7,9 +7,8 @@ if (!isblogo) {
     "use strict";
     // some default settings
     var MARGIN_LEFT = 25, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
-        MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, SVG_NS, NUCLEOTIDE_COLORS,
+        MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, NUCLEOTIDE_COLORS,
         AMINO_COLORS, MEASURE_CANVAS, STRETCH = 0.65;
-    SVG_NS = 'http://www.w3.org/2000/svg';
     NUCLEOTIDE_COLORS = {
         'A': 'rgb(0, 200, 50)',
         'G': 'rgb(230, 200, 0)',
@@ -88,7 +87,7 @@ if (!isblogo) {
 
     // Generic PSSM drawing function
     function drawPSSM(pssm, scalex, y0, yHeight, drawFun) {
-        var x, y, motifPos, size, columnRanks, currentGlyph, row, maxWidth, rseq, oldy;
+        var x, y, motifPos, size, columnRanks, currentGlyph, row, maxWidth, rseq;
         x = MARGIN_LEFT;
 
         for (motifPos = 0; motifPos < pssm.values.length; motifPos += 1) {
@@ -102,7 +101,6 @@ if (!isblogo) {
                 if (size.width > maxWidth) {
                     maxWidth = size.width;
                 }
-                oldy = y;
                 y -= size.height;
             }
             x += maxWidth;
