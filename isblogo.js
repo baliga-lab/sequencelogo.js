@@ -97,7 +97,9 @@ if (!isblogo) {
             rseq = rsequence(pssm, motifPos);
             for (row = 0; row < columnRanks.length; row += 1) {
                 currentGlyph = pssm.alphabet[columnRanks[row][0]];
-                size = drawFun(currentGlyph, x, y, scalex, yHeight, rseq * columnRanks[row][1]);
+                size = drawFun(currentGlyph, x, y, scalex, yHeight,
+                               rseq * columnRanks[row][1]);
+                console.debug('mpos: ' + motifPos + ' height: ' + size.height);
                 if (size.width > maxWidth) {
                     maxWidth = size.width;
                 }
@@ -121,6 +123,7 @@ if (!isblogo) {
                 }
             }
         }
+        return imageData.height;
     }
     function lastLine(imageData) {
         var pixels = imageData.data, row, col, index;
@@ -132,6 +135,7 @@ if (!isblogo) {
                 }
             }
         }
+        return imageData.height - 1;
     }
 
     function measureText(text, font, scalex, scaley) {
@@ -247,9 +251,10 @@ if (!isblogo) {
         drawPSSM(pssm, scalex,
                  canvas.height - MARGIN_BOTTOM, yHeight,
                  function (currentGlyph, x, y, scalex, yHeight, weight) {
-                return drawGlyph(context, currentGlyph, colorTableFor(pssm), x, y,
-                                 scalex, yHeight,
-                                 maxFontHeightNormal, weight);
+                     return drawGlyph(context, currentGlyph,
+                                      colorTableFor(pssm), x, y,
+                                      scalex, yHeight,
+                                      maxFontHeightNormal, weight);
             });
     }
 
