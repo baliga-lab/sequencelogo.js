@@ -157,29 +157,6 @@ if (!seqlogo) {
         return lastLine(imageData) - first + 1;
     }
 
-
-    function drawLabelsX(context, startx, y) {
-        context.font = '12pt Arial';
-        var intervalDistance, x, textHeight, i, label, labelWidth, transx, transy;
-        intervalDistance = 20;
-        x = startx;
-        textHeight = measureText('M', context.font, 1.0, 1.0);
-
-        for (i = 10; i < 150; i += 10) {
-            context.save();
-            label = i.toString();
-            labelWidth = context.measureText(label).width;
-            transx = x + labelWidth / 2.0;
-            transy = y - textHeight / 2.0;
-            context.translate(transx, transy);
-            context.rotate(-Math.PI / 2);
-            context.translate(-transx, -transy);
-            context.fillText(label, x, y);
-            x += intervalDistance;
-            context.restore();
-        }
-    }
-
     function drawLabelsY(context, numBits, x0, y0, yHeight) {
         var i, label, ydist = yHeight / numBits, y = y0;
 
@@ -237,7 +214,6 @@ if (!seqlogo) {
             numBits = Math.ceil(log(pssm.alphabet.length, 2)),
             bottom = canvas.height - MARGIN_BOTTOM;
         drawAxis(context, numBits, right, bottom);
-        //drawLabelsX(context, MARGIN_LEFT, canvas.height);
         drawLabelsY(context, numBits, MARGIN_LEFT - 25, bottom, bottom - MARGIN_TOP);
     }
 
