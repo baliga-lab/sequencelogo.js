@@ -6,9 +6,9 @@ if (!seqlogo) {
 (function () {
     "use strict";
     // some default settings
-    var MARGIN_LEFT = 25, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
+    var MARGIN_LEFT = 40, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
         MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, NUCLEOTIDE_COLORS,
-        AMINO_COLORS, MEASURE_CANVAS, STRETCH = 0.65;
+        AMINO_COLORS, MEASURE_CANVAS, STRETCH = 0.65, BASELINE = 6;
     NUCLEOTIDE_COLORS = {
         'A': 'rgb(0, 200, 50)',
         'G': 'rgb(230, 200, 0)',
@@ -157,7 +157,7 @@ if (!seqlogo) {
         return lastLine(imageData) - first + 1;
     }
 
-/*
+
     function drawLabelsX(context, startx, y) {
         context.font = '12pt Arial';
         var intervalDistance, x, textHeight, i, label, labelWidth, transx, transy;
@@ -179,32 +179,54 @@ if (!seqlogo) {
             context.restore();
         }
     }
-*/
-    function drawLabelsY(context, pssm, x0, y0, yHeight) {
-        var i, label, x = x0, numBits = Math.ceil(log(pssm.alphabet.length, 2)), ydist = (yHeight - 10) / numBits, y = y0 - ydist;
-        context.font = '12pt Arial';
-        context.fillText('bits', x + 10, MARGIN_TOP - 5);
 
-        for (i = 1; i <= numBits; i += 1) {
+    function drawLabelsY(context, pssm, x0, y0, yHeight) {
+        var i, label, numBits = Math.ceil(log(pssm.alphabet.length, 2)),
+            ydist = yHeight / numBits, y = y0;
+
+        context.font = '12pt Arial';
+        context.fillText('bits', x0 + 10, MARGIN_TOP - 5);
+        var textHeight = measureText('M', context.font, 1.0, 1.0);
+        y += textHeight / 2;
+
+        for (i = 0; i <= numBits; i += 1) {
             label = i.toString();
-            context.fillText(label, x, y);
+            context.fillText(label, x0, y);
             y -= ydist;
         }
     }
 
-    function drawScale(canvas, pssm) {
-        var context, right, bottom;
-        context = canvas.getContext('2d');
-        right = canvas.width - MARGIN_RIGHT;
-        bottom = canvas.height - MARGIN_BOTTOM;
-
-        //drawLabelsX(context, MARGIN_LEFT, canvas.height);
-        drawLabelsY(context, pssm, 5, bottom, bottom - MARGIN_TOP);
+    function drawAxis(context, right, bottom) {
         context.beginPath();
         context.moveTo(MARGIN_LEFT, MARGIN_TOP);
         context.lineTo(MARGIN_LEFT, bottom);
         context.lineTo(right, bottom);
         context.stroke();
+
+        // draw the ticks
+        var ymid = MARGIN_TOP + (bottom - MARGIN_TOP) / 2;
+        context.beginPath();
+        context.moveTo(MARGIN_LEFT - 10, MARGIN_TOP);
+        context.lineTo(MARGIN_LEFT, MARGIN_TOP);
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(MARGIN_LEFT - 10, bottom);
+        context.lineTo(MARGIN_LEFT, bottom);
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(MARGIN_LEFT - 10, ymid);
+        context.lineTo(MARGIN_LEFT, ymid);
+        context.stroke();
+    }
+
+    function drawScale(canvas, pssm) {
+        var context = canvas.getContext('2d'), right = canvas.width - MARGIN_RIGHT,
+            bottom = canvas.height - MARGIN_BOTTOM;
+        drawAxis(context, right, bottom);
+        //drawLabelsX(context, MARGIN_LEFT, canvas.height);
+        drawLabelsY(context, pssm, MARGIN_LEFT - 25, bottom, bottom - MARGIN_TOP);
     }
 
     function drawGlyph(context, glyph, colors, x, y, scalex,
