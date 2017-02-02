@@ -10,11 +10,11 @@ if (!seqlogo) {
         MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, NUCLEOTIDE_COLORS,
         AMINO_COLORS, MEASURE_CANVAS, STRETCH = 0.65, BASELINE = 6;
     NUCLEOTIDE_COLORS = {
-        'A': 'rgb(0, 200, 50)',
-        'G': 'rgb(230, 200, 0)',
+        'A': 'rgb(0, 128, 0)',
+        'G': 'rgb(255, 165, 0)',
         'T': 'rgb(255, 0, 0)',
         'U': 'rgb(255, 0, 0)',
-        'C': 'rgb(0, 0, 230)'
+        'C': 'rgb(0, 0, 255)'
     };
     AMINO_COLORS = {
         // polar amino acids
@@ -180,9 +180,8 @@ if (!seqlogo) {
         }
     }
 
-    function drawLabelsY(context, pssm, x0, y0, yHeight) {
-        var i, label, numBits = Math.ceil(log(pssm.alphabet.length, 2)),
-            ydist = yHeight / numBits, y = y0;
+    function drawLabelsY(context, numBits, x0, y0, yHeight) {
+        var i, label, ydist = yHeight / numBits, y = y0;
 
         context.font = '12pt Arial';
         context.fillText('bits', x0 + 10, MARGIN_TOP - 5);
@@ -196,37 +195,50 @@ if (!seqlogo) {
         }
     }
 
-    function drawAxis(context, right, bottom) {
+    function drawMinorTicksY(context, y0, y1, numDivisions) {
+        var interval = (y1 - y0) / numDivisions, y = y0;
+        for (var i = 0; i < numDivisions; i++) {
+            if (i > 0) {
+                context.beginPath();
+                context.moveTo(MARGIN_LEFT - 5, y);
+                context.lineTo(MARGIN_LEFT, y);
+                context.stroke();
+            }
+            y += interval;
+        }
+    }
+
+    function drawTicksY(context, numBits, bottom) {
+        var mainIntervalY = (bottom - MARGIN_TOP) / numBits;
+        var y = MARGIN_TOP;
+        for (var i = 0; i <= numBits; i++) {
+            context.beginPath();
+            context.moveTo(MARGIN_LEFT - 10, y);
+            context.lineTo(MARGIN_LEFT, y);
+            context.stroke();
+            if (i < numBits) drawMinorTicksY(context, y, y + mainIntervalY, 5);
+            y += mainIntervalY;
+        }
+    }
+
+    function drawAxis(context, numBits, right, bottom) {
+        // main axis
         context.beginPath();
         context.moveTo(MARGIN_LEFT, MARGIN_TOP);
         context.lineTo(MARGIN_LEFT, bottom);
         context.lineTo(right, bottom);
         context.stroke();
 
-        // draw the ticks
-        var ymid = MARGIN_TOP + (bottom - MARGIN_TOP) / 2;
-        context.beginPath();
-        context.moveTo(MARGIN_LEFT - 10, MARGIN_TOP);
-        context.lineTo(MARGIN_LEFT, MARGIN_TOP);
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(MARGIN_LEFT - 10, bottom);
-        context.lineTo(MARGIN_LEFT, bottom);
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(MARGIN_LEFT - 10, ymid);
-        context.lineTo(MARGIN_LEFT, ymid);
-        context.stroke();
+        drawTicksY(context, numBits, bottom);
     }
 
     function drawScale(canvas, pssm) {
         var context = canvas.getContext('2d'), right = canvas.width - MARGIN_RIGHT,
+            numBits = Math.ceil(log(pssm.alphabet.length, 2)),
             bottom = canvas.height - MARGIN_BOTTOM;
-        drawAxis(context, right, bottom);
+        drawAxis(context, numBits, right, bottom);
         //drawLabelsX(context, MARGIN_LEFT, canvas.height);
-        drawLabelsY(context, pssm, MARGIN_LEFT - 25, bottom, bottom - MARGIN_TOP);
+        drawLabelsY(context, numBits, MARGIN_LEFT - 25, bottom, bottom - MARGIN_TOP);
     }
 
     function drawGlyph(context, glyph, colors, x, y, scalex,
