@@ -1,7 +1,7 @@
-/* isblogo.js - see README and LICENSE for details */
-var isblogo;
-if (!isblogo) {
-    isblogo = {};
+/* seqlogo.js - see README and LICENSE for details */
+var seqlogo;
+if (!seqlogo) {
+    seqlogo = {};
 }
 (function () {
     "use strict";
@@ -99,7 +99,6 @@ if (!isblogo) {
                 currentGlyph = pssm.alphabet[columnRanks[row][0]];
                 size = drawFun(currentGlyph, x, y, scalex, yHeight,
                                rseq * columnRanks[row][1]);
-                console.debug('mpos: ' + motifPos + ' height: ' + size.height);
                 if (size.width > maxWidth) {
                     maxWidth = size.width;
                 }
@@ -274,11 +273,11 @@ if (!isblogo) {
     // ****** Public API
     // **********************************************************************
 
-    isblogo.makeLogo = function (id, pssm, options) {
+    seqlogo.makeLogo = function (id, pssm, options) {
         if (options === null) {
             options = DEFAULT_OPTIONS;
         }
-        // TODO: copy the options from DEFAULT_OPTIONS that are missing        
+        // TODO: copy the options from DEFAULT_OPTIONS that are missing
         makeCanvas(id, options, pssm);
     };
 }());

@@ -1,5 +1,5 @@
-ISB Logo - simple sequence logo visualization in Javascript
-===========================================================                                                                   
+sequencelogo.js - simple sequence logo visualization in Javascript
+==================================================================                                                                   
 
 ## Description
 
@@ -8,7 +8,7 @@ logo into an HTML canvas element, given a PSSM.
 
 ## Usage
 
-    isblogo.makeLogo(id, pssm, options);
+    seqlogo.makeLogo(id, pssm, options);
 
 ### Parameters
 
@@ -25,7 +25,7 @@ logo into an HTML canvas element, given a PSSM.
 
 ### Example
 
-    isblogo.makeLogo('mylogo',
+    seqlogo.makeLogo('mylogo',
                      {
                        alphabet: ['A', 'G', 'C', 'T'],
                        values: [[0.0, 0.1, 0.8, 0.1],
