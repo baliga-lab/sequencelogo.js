@@ -106,6 +106,7 @@ if (!seqlogo) {
             }
             x += maxWidth;
         }
+        return x;
     }
 
     // **********************************************************************
@@ -257,14 +258,38 @@ if (!seqlogo) {
         sumColumnWidthsNormal = context.measureText('W').width * pssm.values.length;
         xWidth = canvas.width - (MARGIN_LEFT + MARGIN_RIGHT);
         scalex = xWidth / sumColumnWidthsNormal;
-        drawPSSM(pssm, scalex,
-                 canvas.height - MARGIN_BOTTOM, yHeight,
-                 function (currentGlyph, x, y, scalex, yHeight, weight) {
-                     return drawGlyph(context, currentGlyph,
-                                      colorTableFor(pssm), x, y,
-                                      scalex, yHeight,
-                                      maxFontHeightNormal, weight);
-            });
+        var lastX = drawPSSM(pssm, scalex,
+                             canvas.height - MARGIN_BOTTOM, yHeight,
+                             function (currentGlyph, x, y, scalex, yHeight, weight) {
+                                 return drawGlyph(context, currentGlyph,
+                                                  colorTableFor(pssm), x, y,
+                                                  scalex, yHeight,
+                                                  maxFontHeightNormal, weight);
+                             });
+        return (lastX - MARGIN_LEFT) / pssm.values.length;
+    }
+
+    function drawTicksX(canvas, pssm,  interval) {
+        var context = canvas.getContext('2d'), bottom = canvas.height - MARGIN_BOTTOM;
+        context.font = '12pt Arial';
+        context.fillStyle = 'black';
+        for (var i = 1; i <= pssm.values.length; i++) {
+            var x = MARGIN_LEFT + i * interval;
+            var xi = x - interval / 2;
+            var tickHeight = (i % 5 == 0) ? 10 : 5;
+            context.beginPath();
+            context.moveTo(xi, bottom);
+            context.lineTo(xi, bottom + tickHeight);
+            context.stroke();
+            if (i % 5 == 0) {
+                var label = i.toString();
+                var textdim = context.measureText(label);
+                // the TextMetrics object currently does not have any other attributes
+                // than width, so we simply specify a text height
+                var textHeight = 14;
+                context.fillText(label, xi - textdim.width / 2, bottom + tickHeight + textHeight);
+            }
+        }
     }
 
     function makeCanvas(id, options, pssm) {
@@ -276,7 +301,8 @@ if (!seqlogo) {
         elem = document.getElementById(id);
         elem.parentNode.replaceChild(canvas, elem);
         drawScale(canvas, pssm);
-        drawGlyphs(canvas, options, pssm);
+        var interval = drawGlyphs(canvas, options, pssm);
+        drawTicksX(canvas, pssm, interval);
     }
 
     // **********************************************************************
