@@ -1,10 +1,18 @@
 sequencelogo.js - simple sequence logo visualization in Javascript
-==================================================================                                                                   
+==================================================================
+
+![Example image](example.png)
 
 ## Description
 
-This is a simple Javascript library that renders a sequence
-logo into an HTML canvas element, given a PSSM.
+This is a simple Javascript library that renders a sequence logo into an HTML canvas element, given a PSSM.
+Advantages:
+
+  * small
+  * cross-browser
+  * no dependencies on other Javascript libraries
+  * renders graphics on the fly
+  * default color sets for nucleotide and peptide sequences
 
 ## Usage
 
