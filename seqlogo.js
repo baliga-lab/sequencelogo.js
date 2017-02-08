@@ -8,7 +8,7 @@ if (!seqlogo) {
     // some default settings
     var MARGIN_LEFT = 40, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
         MARGIN_BOTTOM = 30, DEFAULT_OPTIONS, NUCLEOTIDE_COLORS,
-        AMINO_COLORS, MEASURE_CANVAS, STRETCH = 0.65, BASELINE = 6;
+        AMINO_COLORS, MEASURE_CANVAS, STRETCH = 0.65;
     NUCLEOTIDE_COLORS = {
         'A': 'rgb(0, 128, 0)',
         'G': 'rgb(255, 165, 0)',
@@ -74,7 +74,7 @@ if (!seqlogo) {
         for (row = 0; row < pssm.values[motifPos].length; row += 1) {
             freq = pssm.values[motifPos][row];
             if (freq > 0) {
-                sum +=  freq * log(freq, 2);
+                sum += freq * log(freq, 2);
             }
         }
         return -sum;
@@ -174,8 +174,8 @@ if (!seqlogo) {
     }
 
     function drawMinorTicksY(context, y0, y1, numDivisions) {
-        var interval = (y1 - y0) / numDivisions, y = y0;
-        for (var i = 0; i < numDivisions; i++) {
+        var interval = (y1 - y0) / numDivisions, y = y0, i;
+        for (i = 0; i < numDivisions; i += 1) {
             if (i > 0) {
                 context.beginPath();
                 context.moveTo(MARGIN_LEFT - 5, y);
@@ -188,13 +188,15 @@ if (!seqlogo) {
 
     function drawTicksY(context, numBits, bottom) {
         var mainIntervalY = (bottom - MARGIN_TOP) / numBits;
-        var y = MARGIN_TOP;
-        for (var i = 0; i <= numBits; i++) {
+        var y = MARGIN_TOP, i;
+        for (i = 0; i <= numBits; i += 1) {
             context.beginPath();
             context.moveTo(MARGIN_LEFT - 10, y);
             context.lineTo(MARGIN_LEFT, y);
             context.stroke();
-            if (i < numBits) drawMinorTicksY(context, y, y + mainIntervalY, 5);
+            if (i < numBits) {
+                drawMinorTicksY(context, y, y + mainIntervalY, 5);
+            }
             y += mainIntervalY;
         }
     }
@@ -269,24 +271,24 @@ if (!seqlogo) {
         return (lastX - MARGIN_LEFT) / pssm.values.length;
     }
 
-    function drawTicksX(canvas, pssm,  interval) {
-        var context = canvas.getContext('2d'), bottom = canvas.height - MARGIN_BOTTOM;
+    function drawTicksX(canvas, pssm, interval) {
+        var context = canvas.getContext('2d'), bottom = canvas.height - MARGIN_BOTTOM, i, x, xi, tickHeight, label, textdim, textHeight;
         context.font = '12pt Arial';
         context.fillStyle = 'black';
-        for (var i = 1; i <= pssm.values.length; i++) {
-            var x = MARGIN_LEFT + i * interval;
-            var xi = x - interval / 2;
-            var tickHeight = (i % 5 == 0) ? 10 : 5;
+        for (i = 1; i <= pssm.values.length; i += 1) {
+            x = MARGIN_LEFT + i * interval;
+            xi = x - interval / 2;
+            tickHeight = (i % 5 === 0) ? 10 : 5;
             context.beginPath();
             context.moveTo(xi, bottom);
             context.lineTo(xi, bottom + tickHeight);
             context.stroke();
-            if (i % 5 == 0) {
-                var label = i.toString();
-                var textdim = context.measureText(label);
+            if (i % 5 === 0) {
+                label = i.toString();
+                textdim = context.measureText(label);
                 // the TextMetrics object currently does not have any other attributes
                 // than width, so we simply specify a text height
-                var textHeight = 14;
+                textHeight = 14;
                 context.fillText(label, xi - textdim.width / 2, bottom + tickHeight + textHeight);
             }
         }
