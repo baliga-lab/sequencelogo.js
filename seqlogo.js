@@ -1,9 +1,5 @@
 /* seqlogo.js - see README and LICENSE for details */
-var seqlogo;
-if (!seqlogo) {
-    seqlogo = {};
-}
-(function () {
+(function (glob) {
     "use strict";
     // some default settings
     var MARGIN_LEFT = 40, MARGIN_TOP = 20, MARGIN_RIGHT = 20,
@@ -295,13 +291,13 @@ if (!seqlogo) {
     }
 
     function makeCanvas(id, options, pssm) {
-        var canvas = document.createElement("canvas"), elem;
-        canvas.id = id;
+        var elem = document.getElementById(id);
+        var canvas = document.createElement("canvas");
         canvas.setAttribute('width', options.width);
         canvas.setAttribute('height', options.height);
         canvas.setAttribute('style', 'border: 1px solid black');
-        elem = document.getElementById(id);
         elem.parentNode.replaceChild(canvas, elem);
+        canvas.id = id;
         drawScale(canvas, pssm);
         var interval = drawGlyphs(canvas, options, pssm);
         drawTicksX(canvas, pssm, interval);
@@ -310,7 +306,8 @@ if (!seqlogo) {
     // **********************************************************************
     // ****** Public API
     // **********************************************************************
-
+    var seqlogo = { };
+    seqlogo.version = '1.0.0';
     seqlogo.makeLogo = function (id, pssm, options) {
         if (options === null) {
             options = DEFAULT_OPTIONS;
@@ -318,4 +315,9 @@ if (!seqlogo) {
         // TODO: copy the options from DEFAULT_OPTIONS that are missing
         makeCanvas(id, options, pssm);
     };
-}());
+
+    // These lines needed to support a NPM/ES6 environment, the define() call
+    // is to support RequireJS
+    glob.seqlogo = seqlogo;
+    typeof module != 'undefined' && module.exports ? module.exports = seqlogo : typeof define === "function" && define.amd ? define("seqlogo", [], function () { return seqlogo; }) : glob.seqlogo = seqlogo;
+})(typeof window != "undefined" ? window : this);
