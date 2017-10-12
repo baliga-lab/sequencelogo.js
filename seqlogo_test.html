@@ -31,7 +31,9 @@
         var canvasOptions = {
           width: 400,
           height: 200,
-          glyphStyle: '20pt Helvetica'
+          style: {
+            width: '100%', height: 200, font: '20pt Helvetica'
+          }
         };
         seqlogo.makeLogo('canvas', pssm, canvasOptions);
       }
@@ -63,7 +65,10 @@
         var canvasOptions = {
           width: 400,
           height: 200,
-          glyphStyle: '20pt Helvetica'
+          style: {
+             width: 400, height: 200,
+             font: '20pt Helvetica'
+          }
         };
         seqlogo.makeLogo('canvas', pssm, canvasOptions);
       }

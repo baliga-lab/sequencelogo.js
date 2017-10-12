@@ -42,7 +42,11 @@
         type: 'canvas',
         width: 400,
         height: 300,
-        glyphStyle: '20pt Helvetica'
+        style: {
+            width: 400,
+            height: 300,
+            font: '20pt Helvetica'
+        }
     };
     MEASURE_CANVAS = document.createElement('canvas');
     MEASURE_CANVAS.setAttribute('width', 500);
@@ -250,7 +254,11 @@
         var context, yHeight, maxFontHeightNormal, sumColumnWidthsNormal, xWidth, scalex;
         context = canvas.getContext('2d');
         context.textBaseline = 'alphabetic';
-        context.font = options.glyphStyle;
+        if (options.style && options.style.font) {
+            context.font = options.style.font;
+        } else {
+            context.font = DEFAULT_OPTIONS.style.font;
+        }
         yHeight = canvas.height - (MARGIN_BOTTOM + MARGIN_TOP);
         maxFontHeightNormal = measureText('Mg', context.font, 1.0, 1.0);
         sumColumnWidthsNormal = context.measureText('W').width * pssm.values.length;
@@ -295,7 +303,13 @@
         var canvas = document.createElement("canvas");
         canvas.setAttribute('width', options.width);
         canvas.setAttribute('height', options.height);
-        canvas.setAttribute('style', 'border: 1px solid black');
+        if (options.style) {
+            canvas.setAttribute('style', 'border: 1px solid black; width: ' +
+                                options.style.width + '; height: ' + options.style.height +
+                                '; font: ' + options.font);
+        } else {
+            canvas.setAttribute('style', 'border: 1px solid black');
+        }
         elem.parentNode.replaceChild(canvas, elem);
         canvas.id = id;
         drawScale(canvas, pssm);
