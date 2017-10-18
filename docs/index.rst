@@ -12,6 +12,8 @@ sequence (either nucleic acid or peptide) and the library will automatically
 render the motif logo in an HTML5 canvas element using the provided rendering
 options.
 
+The example below was used to generate the project's logo image:
+
 .. sourcecode:: html
 
       <div id="motif1"></div>
