@@ -53,3 +53,5 @@ The example below was used to generate the project's logo image:
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   How to use sequencelogo.js <howtouse>
