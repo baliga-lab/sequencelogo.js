@@ -22,7 +22,7 @@ The example below was used to generate the project's logo image:
         function initCanvas() {
           var pssm = {
             alphabet: ['A', 'G', 'C', 'T'],
-              values: [
+            values: [
                 [ 0, 0, 0.888889, 0.111111 ],
                 [ 0.722222, 0, 0.277778, 0 ],
                 [ 0, 0.833333, 0, 0.166667 ],
