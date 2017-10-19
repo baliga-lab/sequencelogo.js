@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>How to use sequencelogo.js &#8212; sequencelogo.js 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to sequencelogo.js" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-use-sequencelogo-js">
+<h1>How to use sequencelogo.js<a class="headerlink" href="#how-to-use-sequencelogo-js" title="Permalink to this headline">¶</a></h1>
+<p>In order to use <code class="docutils literal"><span class="pre">sequencelogo.js</span></code> in your own web pages, simply include
+it using the <code class="docutils literal"><span class="pre">script</span></code> tag:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;seqlogo.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Then use a script section to turn a div into a sequence logo view:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;motif1&quot;</span><span class="o">&gt;&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+  <span class="n">seqlogo</span><span class="o">.</span><span class="n">makeLogo</span><span class="p">(</span><span class="s1">&#39;motif1&#39;</span><span class="p">,</span>
+                   <span class="p">{</span>
+                     <span class="n">alphabet</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">],</span>
+                     <span class="n">values</span><span class="p">:</span> <span class="p">[</span>
+                       <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.888889</span><span class="p">,</span> <span class="mf">0.111111</span> <span class="p">],</span>
+                       <span class="p">[</span> <span class="mf">0.722222</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.277778</span><span class="p">,</span> <span class="mi">0</span> <span class="p">],</span>
+                       <span class="o">...</span>
+                     <span class="p">]</span>
+                   <span class="p">},</span>
+                   <span class="p">{</span>
+                      <span class="n">width</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="mi">200</span>
+                   <span class="p">});</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>In general, you render a logo by calling <code class="docutils literal"><span class="pre">seqlogo.makeLogo(id,</span> <span class="pre">pssm,</span> <span class="pre">options)</span></code>.
+The <code class="docutils literal"><span class="pre">pssm</span></code> argument is simply a Javascript option that defines an <code class="docutils literal"><span class="pre">alphabet</span></code> and
+a <code class="docutils literal"><span class="pre">values</span></code> array, which is an array of rows where each row is a score for each
+letter in the alphabet (currently, nucleic acids and peptides are supported).</p>
+<p>The <code class="docutils literal"><span class="pre">options</span></code> parameter currently allows for the following fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>width:</strong> the internal width the view is rendered with</li>
+<li><strong>height:</strong> the internal height the view is rendered with</li>
+<li><strong>style:</strong> this allows the user to define the style that the view is represented
+within the web page. This also allows to define the element in terms of CSS
+definitions. The following fields are available:<ul>
+<li><strong>width:</strong> the width of the element</li>
+<li><strong>height:</strong> the width of the element</li>
+<li><strong>font:</strong> the font attribute of the element</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/example.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">sequencelogo.js</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Simple motif logos for your web site</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=baliga-lab&repo=sequencelogo.js&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to use sequencelogo.js</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to sequencelogo.js</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Wei-ju Wu.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/howtouse.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/baliga-lab/sequencelogo.js" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
