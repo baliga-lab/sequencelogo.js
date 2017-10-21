@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'sequencelogo.js'
-copyright = '2017, Wei-ju Wu'
+copyright = '2017, Baliga Lab, Institute for Systems Biology'
 author = 'Wei-ju Wu'
 
 # The version info for the project you're documenting, acts as replacement for
