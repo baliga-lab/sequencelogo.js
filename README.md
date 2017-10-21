@@ -14,6 +14,22 @@ Advantages:
   * renders graphics on the fly
   * default color sets for nucleotide and peptide sequences
 
+## Installation
+
+Simply include the script in your pages with the script tag.
+
+## Node.js/NPM
+
+This library is also available as an npm package:
+
+```
+  npm install sequencelogo.js
+```
+
+## Documentation
+
+Official documentation at http://baliga-lab.github.io/sequencelogo.js/
+
 ## Usage
 
     seqlogo.makeLogo(id, pssm, options);
