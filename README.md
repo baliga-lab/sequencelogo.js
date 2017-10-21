@@ -23,7 +23,7 @@ Simply include the script in your pages with the script tag.
 This library is also available as an npm package:
 
 ```
-  npm install sequencelogo.js
+  npm install --save @baliga-lab/sequencelogo.js
 ```
 
 ## Documentation

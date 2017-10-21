@@ -1,7 +1,7 @@
 {
-  "name": "sequencelogo.js",
+  "name": "@baliga-lab/sequencelogo.js",
   "version": "1.0.1",
-  "description": "Library for rendering biological sequence logos",
+  "description": "Library for visualizing biological sequence logos",
   "main": "seqlogo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,8 +12,11 @@
   },
   "keywords": [
     "sequence",
+    "motif",
     "logo",
-    "browser"
+    "browser",
+    "pssm",
+    "visualization"
   ],
   "author": "Wei-ju Wu",
   "license": "LGPL-3.0",
