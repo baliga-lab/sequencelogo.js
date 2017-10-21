@@ -6,6 +6,14 @@ it using the ``script`` tag::
 
   <script src="seqlogo.js"></script>
 
+NPM users can use install the package like this:
+
+.. highlight:: none
+
+::
+   
+   npm install --save @baliga-lab/sequencelogo.js
+
 Then use a script section to turn a div into a sequence logo view::
 
   <div id="motif1"></div>

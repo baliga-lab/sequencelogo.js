@@ -46,22 +46,26 @@ it using the <code class="docutils literal"><span class="pre">script</span></cod
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;seqlogo.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
 </pre></div>
 </div>
+<p>NPM users can use install the package like this:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>npm install --save @baliga-lab/sequencelogo.js
+</pre></div>
+</div>
 <p>Then use a script section to turn a div into a sequence logo view:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;motif1&quot;</span><span class="o">&gt;&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
-<span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
-  <span class="n">seqlogo</span><span class="o">.</span><span class="n">makeLogo</span><span class="p">(</span><span class="s1">&#39;motif1&#39;</span><span class="p">,</span>
-                   <span class="p">{</span>
-                     <span class="n">alphabet</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">],</span>
-                     <span class="n">values</span><span class="p">:</span> <span class="p">[</span>
-                       <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.888889</span><span class="p">,</span> <span class="mf">0.111111</span> <span class="p">],</span>
-                       <span class="p">[</span> <span class="mf">0.722222</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.277778</span><span class="p">,</span> <span class="mi">0</span> <span class="p">],</span>
-                       <span class="o">...</span>
-                     <span class="p">]</span>
-                   <span class="p">},</span>
-                   <span class="p">{</span>
-                      <span class="n">width</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="mi">200</span>
-                   <span class="p">});</span>
-<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<div class="highlight-none"><div class="highlight"><pre><span></span>&lt;div id=&quot;motif1&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+  seqlogo.makeLogo(&#39;motif1&#39;,
+                   {
+                     alphabet: [&#39;A&#39;, &#39;G&#39;, &#39;C&#39;, &#39;T&#39;],
+                     values: [
+                       [ 0, 0, 0.888889, 0.111111 ],
+                       [ 0.722222, 0, 0.277778, 0 ],
+                       ...
+                     ]
+                   },
+                   {
+                      width: 400, height: 200
+                   });
+&lt;/script&gt;
 </pre></div>
 </div>
 <p>In general, you render a logo by calling <code class="docutils literal"><span class="pre">seqlogo.makeLogo(id,</span> <span class="pre">pssm,</span> <span class="pre">options)</span></code>.
