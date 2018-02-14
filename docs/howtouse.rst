@@ -11,7 +11,7 @@ NPM users can use install the package like this:
 .. highlight:: none
 
 ::
-   
+
    npm install --save @baliga-lab/sequencelogo.js
 
 Then use a script section to turn a div into a sequence logo view::
