@@ -19,6 +19,12 @@
     "visualization"
   ],
   "author": "Wei-ju Wu",
+  "contributors": [
+    {
+      "name": "LU, Kuang-chen",
+      "email": "lkc1024@zoho.com"
+    }
+  ],
   "license": "LGPL-3.0",
   "bugs": {
     "url": "https://github.com/baliga-lab/sequencelogo.js/issues"
