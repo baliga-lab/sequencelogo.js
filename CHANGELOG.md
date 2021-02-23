@@ -1,5 +1,9 @@
 # Changlog
 
+## 1.0.3
+
+added annotations for Typescript
+
 ## 1.0.2
 
 updated README.md
